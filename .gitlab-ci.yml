@@ -16,3 +16,17 @@ build_image:
 # SAST job
 include:
   template: SAST.gitlab-ci.yml
+
+# DAST job
+dast_job:
+  stage: test
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker run -d -p 8080:80 felipegreggio/imc-app:latest
+    - sleep 10  # Give some time for the app to start
+  variables:
+    DAST_WEBSITE: "http://localhost:8080"
+  include:
+    - template: DAST.gitlab-ci.yml
