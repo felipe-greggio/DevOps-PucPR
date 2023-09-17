@@ -1,0 +1,16 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+include:
+  template: SAST.gitlab-ci.yml
+
+
+before_script:
+  - docker login -u "$DOCKER_HUB_USERNAME" -p "$DOCKER_HUB_PASSWORD"
+
+build:
+  script:
+    - docker build -t felipegreggio/imc-app:latest .
+    - docker push felipegreggio/imc-app:latest
