@@ -1,15 +1,18 @@
-image: docker:latest
+stages:
+  - build
+  - test
 
-services:
-  - docker:dind
-
-include:
-  template: SAST.gitlab-ci.yml
-
-before_script:
-  - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
-
-build:
+# Custom build job
+build_image:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
   script:
+    - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
     - docker build -t felipegreggio/imc-app:latest .
     - docker push felipegreggio/imc-app:latest
+
+# SAST job
+include:
+  template: SAST.gitlab-ci.yml
