@@ -2,6 +2,11 @@ stages:
   - build
   - test
 
+# Include templates
+include:
+  - template: SAST.gitlab-ci.yml
+  - template: DAST.gitlab-ci.yml
+
 # Custom build job
 build_image:
   stage: build
@@ -12,10 +17,6 @@ build_image:
     - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
     - docker build -t felipegreggio/imc-app:latest .
     - docker push felipegreggio/imc-app:latest
-
-# SAST job
-include:
-  template: SAST.gitlab-ci.yml
 
 # DAST job
 dast_job:
@@ -28,6 +29,3 @@ dast_job:
     - sleep 10  # Give some time for the app to start
   variables:
     DAST_WEBSITE: "http://localhost:8080"
-    
-include:
-  - template: DAST.gitlab-ci.yml
