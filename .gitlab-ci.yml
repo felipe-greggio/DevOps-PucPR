@@ -29,3 +29,7 @@ dast_job:
     - sleep 10  # Give some time for the app to start
   variables:
     DAST_WEBSITE: "http://localhost:8080"
+
+# Override the stage for the dast job from the DAST.gitlab-ci.yml template
+dast:
+  stage: test
