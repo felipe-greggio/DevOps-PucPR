@@ -28,5 +28,6 @@ dast_job:
     - sleep 10  # Give some time for the app to start
   variables:
     DAST_WEBSITE: "http://localhost:8080"
-  include:
-    - template: DAST.gitlab-ci.yml
+    
+include:
+  - template: DAST.gitlab-ci.yml
