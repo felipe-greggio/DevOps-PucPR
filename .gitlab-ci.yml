@@ -37,9 +37,11 @@ dast:
 
 
 alert:
-  stage: Deploy
+  stage: deploy
   after_script:
-    - chmod +x telegram.sh
+    - chmod +x telegram_notification.sh
     - ./telegram_notification.sh
   script:
     - echo "send message to telegram!"
+  when: always 
+
