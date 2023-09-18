@@ -26,13 +26,18 @@ deploy:
     - echo "Deploy project"
     - echo "Running docker in port 8080"
     - docker run -d -p 8080:80 felipegreggio/imc-app:latest
-    - apt-get update -qq && apt-get install -y curl jq
+
+    # Install required tools for Alpine Linux
+    - apk add --no-cache curl jq
+
+    # Install ngrok
     - wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
     - unzip ngrok-stable-linux-amd64.zip
     - ./ngrok authtoken $NGROK_AUTH_TOKEN
     - ./ngrok http 8080 &
-    - sleep 10
+    - sleep 10  # Give ngrok some time to initialize
     - curl -s http://localhost:4040/api/tunnels | jq '.tunnels[0].public_url'
+
 
 alert:
   stage: deploy
