@@ -44,16 +44,16 @@ alert:
     - echo "send message to telegram!"
   when: always
 
-  sast_test:
-    stage: test
-    image: node:14
-    script:
-      - echo "Running SAST on $NGROK_URL"
-      - npm install
-      - ./node_modules/.bin/eslint . -f json -o eslint-output.json
-    artifacts:
-      when: always
-      paths: [eslint-output.json]
-    allow_failure: true
+sast_test:
+  stage: test
+  image: node:14
+  script:
+    - echo "Running SAST on $NGROK_URL"
+    - npm install
+    - ./node_modules/.bin/eslint . -f json -o eslint-output.json
+  artifacts:
+    when: always
+    paths: [eslint-output.json]
+  allow_failure: true
 
 
