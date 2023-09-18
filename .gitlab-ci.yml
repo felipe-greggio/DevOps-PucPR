@@ -1,6 +1,7 @@
 stages:
   - build
   - test
+  - deploy
 
 # Include templates
 include:
@@ -26,10 +27,19 @@ dast_job:
     - docker:dind
   script:
     - docker run -d -p 8080:80 felipegreggio/imc-app:latest
-    - sleep 10  # Give some time for the app to start
+    - sleep 10  
   variables:
     DAST_WEBSITE: "http://localhost:8080/index.html"
 
 # Override the stage for the dast job from the DAST.gitlab-ci.yml template
 dast:
   stage: test
+
+
+alert:
+  stage: Deploy
+  after_script:
+    - chmod +x telegram.sh
+    - ./telegram_notification.sh
+  script:
+    - echo "send message to telegram!"
