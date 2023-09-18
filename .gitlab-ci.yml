@@ -6,9 +6,7 @@ stages:
 # Include templates
 include:
   - template: SAST.gitlab-ci.yml
-  - template: DAST.gitlab-ci.yml
 
-# Custom build job
 build_image:
   stage: build
   image: docker:latest
@@ -19,22 +17,22 @@ build_image:
     - docker build -t felipegreggio/imc-app:latest .
     - docker push felipegreggio/imc-app:latest
 
-# DAST job
-dast_job:
-  stage: test
+deploy:
+  stage: deploy
   image: docker:latest
   services:
     - docker:dind
   script:
+    - echo "Deploy project"
+    - echo "Running docker in port 8080"
     - docker run -d -p 8080:80 felipegreggio/imc-app:latest
-    - sleep 10  
-  variables:
-    DAST_WEBSITE: "http://localhost:8080/index.html"
-
-# Override the stage for the dast job from the DAST.gitlab-ci.yml template
-dast:
-  stage: test
-
+    - apt-get update -qq && apt-get install -y curl jq
+    - wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+    - unzip ngrok-stable-linux-amd64.zip
+    - ./ngrok authtoken $NGROK_AUTH_TOKEN
+    - ./ngrok http 8080 &
+    - sleep 10
+    - curl -s http://localhost:4040/api/tunnels | jq '.tunnels[0].public_url'
 
 alert:
   stage: deploy
