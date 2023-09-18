@@ -1,11 +1,7 @@
 stages:
   - build
-  - test
   - deploy
-
-# Include templates
-include:
-  - template: SAST.gitlab-ci.yml
+  -test
 
 build_image:
   stage: build
@@ -46,5 +42,18 @@ alert:
     - ./telegram_notification.sh
   script:
     - echo "send message to telegram!"
-  when: always 
+  when: always
+
+  sast_test:
+    stage: test
+    image: node:14
+    script:
+      - echo "Running SAST on $NGROK_URL"
+      - npm install
+      - ./node_modules/.bin/eslint . -f json -o eslint-output.json
+    artifacts:
+      when: always
+      paths: [eslint-output.json]
+    allow_failure: true
+
 
