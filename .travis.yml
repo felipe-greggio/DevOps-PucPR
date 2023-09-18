@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+  - "14" # or your desired Node.js version
+
+install:
+  - npm install
+
+before_script:
+  - chmod +x telegram_notification.sh
+
+script:
+  - npm test
+
+after_script:
+  - bash ./telegram_notification.sh
